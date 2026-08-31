@@ -4,6 +4,8 @@
   "description": "Procedural 2D & 2.5D Isometric Dungeon Exploration & Puzzle Game with 50k+ LOC",
   "main": "src/game.js",
   "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
   "bin": {
     "treasure-hunt": "main.py"
   },
@@ -28,7 +30,6 @@
     "web-audio"
   ],
   "author": "Kusuma Podili",
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kusuma-Podili/Treasure-Hunt-Quest.git"

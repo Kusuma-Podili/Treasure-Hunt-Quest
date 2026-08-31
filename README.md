@@ -2,10 +2,10 @@
 
 [![Tests: Passing](https://img.shields.io/badge/Tests-1%2C270%20Passed-brightgreen.svg)](tests/)
 [![Codebase Size](https://img.shields.io/badge/Lines%20of%20Code-50k%2B-blue.svg)](src/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)](#license)
 [![GitHub PRs](https://img.shields.io/badge/Pull%20Requests-5%20Merged-success.svg)](https://github.com/Kusuma-Podili/Treasure-Hunt-Quest/pulls?q=is%3Apr+is%3Aclosed)
 
-**Treasure Hunt Quest** is a production-grade 2D & 2.5D Isometric procedural dungeon exploration game built from the ground up with 50,000+ lines of clean, modular TypeScript/JavaScript and Python code.
+**Treasure Hunt Quest** is a proprietary, production-grade 2D & 2.5D Isometric procedural dungeon exploration game built from the ground up with 50,000+ lines of clean, modular TypeScript/JavaScript and Python code.
 
 ---
 
@@ -120,4 +120,4 @@ make test
 ---
 
 ## 📜 License
-This project is open-source and available under the [MIT License](LICENSE).
+Proprietary. All rights reserved. Copyright (c) 2026 Kusuma Podili.
