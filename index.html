@@ -2,14 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Treasure Hunt Quest</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasure Hunt Quest - Interactive Adventure</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div id="game-container">
-        <h1>Treasure Hunt Quest</h1>
-        <canvas id="game-canvas" width="800" height="600"></canvas>
+        <!-- HUD Header -->
+        <header id="hud-header">
+            <div class="hud-left">
+                <span class="hud-title">🏰 TREASURE HUNT QUEST</span>
+                <div class="health-container">
+                    <span class="hud-label">HP</span>
+                    <div class="health-bar-container">
+                        <div id="health-bar-fill"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="stat-badge" id="level-display">Level: 1</div>
+                <div class="stat-badge" id="score-display">Score: 0</div>
+                <button id="sound-btn" class="btn-sm">🔊 Audio: ON</button>
+            </div>
+        </header>
+
+        <!-- Main Game Viewport -->
+        <div id="canvas-wrapper">
+            <canvas id="game-canvas" width="800" height="600"></canvas>
+            <div id="notification-overlay" class="hidden">
+                <h2 id="notif-title">🎉 LEVEL COMPLETE!</h2>
+                <p id="notif-desc">Treasure Secured! Moving to the deeper crypt...</p>
+            </div>
+        </div>
+
+        <!-- Controls Guide & Footer -->
+        <footer id="hud-footer">
+            <div class="controls-hint">
+                <span>🎮 <b>Controls:</b> Use <b>W / A / S / D</b> or <b>Arrow Keys</b> to move through the maze.</span>
+                <span>💎 <b>Objective:</b> Navigate the labyrinth, uncover fog-of-war, and claim the Golden Chest!</span>
+            </div>
+            <div class="mobile-controls">
+                <button class="dpad-btn" id="btn-up">▲</button>
+                <div class="dpad-row">
+                    <button class="dpad-btn" id="btn-left">◀</button>
+                    <button class="dpad-btn" id="btn-down">▼</button>
+                    <button class="dpad-btn" id="btn-right">▶</button>
+                </div>
+            </div>
+        </footer>
     </div>
-    <script type="module" src="src/game.js"></script>
+
+    <script type="module">
+        import { Game } from './src/game.js';
+        window.addEventListener('DOMContentLoaded', () => {
+            const canvas = document.getElementById('game-canvas');
+            const game = new Game(canvas);
+            game.start();
+
+            // Mobile D-Pad handlers
+            const bindBtn = (id, key) => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        game.movePlayer(key);
+                    });
+                }
+            };
+            bindBtn('btn-up', 'w');
+            bindBtn('btn-down', 's');
+            bindBtn('btn-left', 'a');
+            bindBtn('btn-right', 'd');
+
+            // Sound Toggle
+            const sBtn = document.getElementById('sound-btn');
+            if (sBtn) {
+                sBtn.addEventListener('click', () => {
+                    game.soundEnabled = !game.soundEnabled;
+                    sBtn.innerText = game.soundEnabled ? '🔊 Audio: ON' : '🔇 Audio: OFF';
+                });
+            }
+        });
+    </script>
 </body>
 </html>
