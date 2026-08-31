@@ -1,0 +1,10 @@
+version: '3.8'
+
+services:
+  game:
+    build: .
+    container_name: treasure_hunt_quest
+    ports:
+      - "8000:8000"
+      - "8080:8080"
+    restart: unless-stopped

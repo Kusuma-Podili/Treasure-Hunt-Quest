@@ -1,0 +1,3 @@
+# Treasure Hunt Quest Dependencies
+# The core game engine and test runners use Python standard libraries (http.server, socketserver, json, unittest)
+# No external pip packages required.
