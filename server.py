@@ -4,8 +4,9 @@ import socketserver
 import json
 import os
 import sys
+import argparse
 
-PORTS = [8080, 8000, 8081, 3000, 5000, 8888]
+DEFAULT_PORT = 7777
 
 class GameHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
@@ -17,12 +18,15 @@ class GameHandler(http.server.SimpleHTTPRequestHandler):
         else:
             super().do_GET()
 
-def start_server():
-    for port in PORTS:
+def start_server(port=DEFAULT_PORT):
+    # Try preferred port first, then fallback to other custom ports (not 3000, 8000, 8080, 9000, 5000)
+    candidate_ports = [port, 7777, 8888, 4200, 6543, 9999, 5555]
+    
+    for p in candidate_ports:
         try:
-            httpd = socketserver.TCPServer(('', port), GameHandler)
-            print(f"Treasure Hunt Quest server started at: http://localhost:{port}")
-            print(f"Open your browser at: http://localhost:{port}")
+            httpd = socketserver.TCPServer(('', p), GameHandler)
+            print(f"Treasure Hunt Quest server started at: http://localhost:{p}")
+            print(f"Open your browser at: http://localhost:{p}")
             sys.stdout.flush()
             httpd.serve_forever()
             break
@@ -30,4 +34,7 @@ def start_server():
             continue
 
 if __name__ == '__main__':
-    start_server()
+    parser = argparse.ArgumentParser(description="Treasure Hunt Quest Game Server")
+    parser.add_argument("-p", "--port", type=int, default=DEFAULT_PORT, help="Port to run server on")
+    args = parser.parse_args()
+    start_server(args.port)
