@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Treasure Hunt Quest - Main Application Entry Point
 """

@@ -5,7 +5,53 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 [![GitHub PRs](https://img.shields.io/badge/Pull%20Requests-5%20Merged-success.svg)](https://github.com/Kusuma-Podili/Treasure-Hunt-Quest/pulls?q=is%3Apr+is%3Aclosed)
 
-**Treasure Hunt Quest** is a full-featured, modular 2D / 2.5D Isometric & Top-Down procedural dungeon exploration game built from the ground up with 50,000+ lines of clean, modular TypeScript/JavaScript and Python code.
+**Treasure Hunt Quest** is a production-grade 2D & 2.5D Isometric procedural dungeon exploration game built from the ground up with 50,000+ lines of clean, modular TypeScript/JavaScript and Python code.
+
+---
+
+## 📦 Dependencies & Installation
+
+This project includes multi-ecosystem support with complete dependency manifests and lockfiles:
+
+- **Node / npm**: `package.json` and `package-lock.json`
+- **Python / Poetry**: `pyproject.toml` and `poetry.lock`
+- **Python / Pip**: `requirements.txt`
+- **GNU Make**: `Makefile`
+- **Docker**: `Dockerfile` and `docker-compose.yml`
+
+### Option 1: Python Standard Setup (Zero External Dependencies)
+```bash
+# Clone the repository
+git clone https://github.com/Kusuma-Podili/Treasure-Hunt-Quest.git
+cd Treasure-Hunt-Quest
+
+# Run automated tests (1,270 tests)
+python main.py test
+
+# Start the game server
+python main.py
+```
+
+### Option 2: Node / npm Setup
+```bash
+npm install
+npm test
+npm start
+```
+
+### Option 3: Poetry Setup
+```bash
+poetry install
+poetry run pytest
+poetry run treasure-hunt
+```
+
+### Option 4: Docker / Docker Compose
+```bash
+# Build and start via Docker Compose
+docker compose up -d
+```
+Navigate to `http://localhost:8000` in your web browser.
 
 ---
 
@@ -46,54 +92,6 @@
 
 ---
 
-## 📂 Project Architecture
-
-```
-treasure-hunt-quest/
-├── index.html                     # Main interactive game entry point with modern HUD & canvas
-├── styles.css                     # Cyber-Fantasy game UI stylesheet
-├── server.py                      # Local game server with REST API & telemetry endpoints
-├── src/
-│   ├── engine/                    # PR #1: Core Game Engine (~11,100+ LOC)
-│   │   ├── math/                  # Vector2D, Vector3D, Matrix2D, Geometry, RNG & Perlin noise
-│   │   ├── spatial/               # Quadtree, SpatialHashGrid, BVHTree
-│   │   ├── graphics/              # CanvasRenderer, IsometricRenderer, Camera, Lighting, FogOfWar, Particles
-│   │   └── core/                  # GameLoop, InputManager, EventEmitter, TimerManager
-│   ├── world/                     # PR #2: Procedural Generation & World (~10,000+ LOC)
-│   │   ├── mazes/                 # Kruskal, Prim, Backtracker, Wilson, Eller, Aldous-Broder
-│   │   ├── dungeons/              # BSP Dungeon, Cellular Automata, Drunkard Walk, Room Stitcher
-│   │   ├── biomes/                # Biome Matrix, Tile Palettes, Decoration Placer
-│   │   └── placement/             # Treasure Placer, Trap Placer, Path Validator
-│   ├── gameplay/                  # PR #3: ECS, RPG, Items & AI (~10,000+ LOC)
-│   │   ├── ecs/                   # ECSRegistry, Components, Systems
-│   │   ├── items/                 # Item Database (150+ items), Loot Tables, Inventory
-│   │   ├── rpg/                   # Player Stats, Status Effects, Ancient Relics
-│   │   ├── ai/                    # A* Pathfinding, Sensory Engine, Monster AI Behavior Trees
-│   │   └── narrative/             # Branching Dialogue Engine, Quest Tracker
-│   ├── puzzles/                   # PR #4: Puzzle Matrix & Ciphers (~10,000+ LOC)
-│   │   ├── ciphers/               # Caesar, Vigenère, Polybius Square, Atbash
-│   │   ├── minigames/             # Sliding Puzzle, Laser Mirrors, Gear Dials, Arithmetic Runes, Logic Circuits
-│   │   └── riddles/               # 50+ Ancient Crypt Riddles
-│   ├── editor/                    # PR #4: In-Game Level Builder
-│   │   └── map_editor.js, entity_placer.js, map_serializer.js, editor_ui.js
-│   ├── audio/                     # PR #5: Procedural Audio Synthesizer (~10,000+ LOC)
-│   │   └── synth.js, sfx_generator.js, music_sequencer.js
-│   ├── campaign/                  # PR #5: 3 Multi-Stage Story Campaigns
-│   │   └── chapter1_crypt.js, chapter2_pyramid.js, chapter3_galleon.js, codex.js
-│   ├── ui/                        # PR #5: Game HUD, Inventory, Puzzle Modals, Leaderboards
-│   │   └── hud.js, inventory_view.js, puzzle_modal.js, leaderboard_view.js
-│   └── game.js                    # Main Game Loop Orchestrator
-└── tests/                         # PR #5: Comprehensive Test Suites
-    ├── test_runner.py             # Master test suite runner (1,270 tests)
-    ├── test_math_engine.py        # Suite 1: Math & Geometry
-    ├── test_world_generation.py   # Suite 2: World Generation & Reachability
-    ├── test_ecs_gameplay.py       # Suite 3: ECS & Inventory Logic
-    ├── test_puzzles_ciphers.py    # Suite 4: Puzzles & Ciphers
-    └── test_game_integration.py   # Suite 5: End-to-End Game State Loop
-```
-
----
-
 ## 🔀 Pull Request History
 
 | PR # | Branch | Title | Status | LOC Added |
@@ -113,28 +111,11 @@ The project includes **5 distinct automated test suites** covering **1,270 test 
 ```bash
 # Run all automated test suites
 python tests/test_runner.py
+# or
+npm test
+# or
+make test
 ```
-
-### Test Suite Breakdown:
-1. **Math & Geometry Suite (`tests/test_math_engine.py`)**: Vector arithmetic, normalization, matrix affine transformations, AABB & Circle intersections.
-2. **World Generation Suite (`tests/test_world_generation.py`)**: Maze algorithms, BSP dungeon partitioning, cellular automata smoothing passes, path reachability solvers.
-3. **ECS & Gameplay Suite (`tests/test_ecs_gameplay.py`)**: Entity lifecycle, component storage, inventory capacity, status effect ticks, AI state transitions.
-4. **Puzzles & Ciphers Suite (`tests/test_puzzles_ciphers.py`)**: Caesar/Vigenère ciphers, sliding puzzle parity solvability invariants, laser raycasting reflection angles.
-5. **Game State Integration Suite (`tests/test_game_integration.py`)**: Full end-to-end game loops, scoring, progression, telemetry, and campaign clearing scenarios.
-
----
-
-## 🚀 How to Run Locally
-
-1. **Start the local server**:
-   ```bash
-   python server.py
-   ```
-2. **Open in browser**:
-   Navigate to `http://localhost:8080` (or open `index.html` directly in any modern web browser).
-3. **Controls**:
-   - `W / A / S / D` or `Arrow Keys` to move through the dungeon.
-   - Explore rooms, reveal fog of war, collect ancient relics, and reach the treasure chest!
 
 ---
 

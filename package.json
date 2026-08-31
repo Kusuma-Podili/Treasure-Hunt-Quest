@@ -4,13 +4,19 @@
   "description": "Procedural 2D & 2.5D Isometric Dungeon Exploration & Puzzle Game with 50k+ LOC",
   "main": "src/game.js",
   "type": "module",
+  "bin": {
+    "treasure-hunt": "main.py"
+  },
   "scripts": {
     "start": "python main.py",
     "dev": "python server.py",
     "build": "python scripts/count_loc.py",
     "test": "python tests/test_runner.py",
     "lint": "python -c \"print('All files lint clean!')\"",
-    "serve": "python server.py"
+    "serve": "serve . -p 8000"
+  },
+  "devDependencies": {
+    "serve": "^14.2.4"
   },
   "keywords": [
     "treasure-hunt",
