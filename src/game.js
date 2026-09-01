@@ -51,7 +51,7 @@ export class Game {
         }
     }
 
-    playTone(freq, type = 'sine', duration = 0.1, vol = 0.1) {
+    playTone(freq, type = 'sine', duration = 0.1, vol = 0.08) {
         if (!this.soundEnabled) return;
         try {
             this.initAudio();
@@ -100,7 +100,7 @@ export class Game {
             }
         }
 
-        // Add some random loops for better gameplay
+        // Add some random pathways for exploration
         for (let i = 0; i < 8; i++) {
             const rx = Math.floor(Math.random() * (this.cols - 2)) + 1;
             const ry = Math.floor(Math.random() * (this.rows - 2)) + 1;
@@ -111,7 +111,7 @@ export class Game {
         this.treasure = { x: this.cols - 2, y: this.rows - 2 };
         this.grid[this.treasure.y][this.treasure.x] = 0;
 
-        // Place a few spike traps
+        // Place soft pastel spike traps
         this.traps = [];
         for (let i = 0; i < 4 + this.level; i++) {
             const tx = Math.floor(Math.random() * (this.cols - 4)) + 2;
@@ -132,13 +132,13 @@ export class Game {
     }
 
     updateSight() {
-        // Demote 2 to 1
+        // Demote visible 2 to explored 1
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
                 if (this.fog[y][x] === 2) this.fog[y][x] = 1;
             }
         }
-        // Radius 5 sight
+        // Radius 5 gentle lantern sight
         const r = 5;
         for (let dy = -r; dy <= r; dy++) {
             for (let dx = -r; dx <= r; dx++) {
@@ -169,7 +169,7 @@ export class Game {
         if (nx >= 0 && nx < this.cols && ny >= 0 && ny < this.rows && this.grid[ny][nx] === 0) {
             this.player.x = nx;
             this.player.y = ny;
-            this.playTone(220, 'triangle', 0.05, 0.05);
+            this.playTone(330, 'sine', 0.06, 0.05); // Melodic soft step
             this.updateSight();
 
             // Check Trap
@@ -177,8 +177,8 @@ export class Game {
                 if (trap.x === nx && trap.y === ny && !trap.triggered) {
                     trap.triggered = true;
                     this.hp = Math.max(10, this.hp - 20);
-                    this.playTone(130, 'sawtooth', 0.2, 0.15);
-                    this.spawnParticles(nx, ny, '#ef4444', 15);
+                    this.playTone(180, 'triangle', 0.2, 0.12);
+                    this.spawnParticles(nx, ny, '#e06b75', 18);
                 }
             }
 
@@ -187,9 +187,10 @@ export class Game {
                 this.score += 1000 * this.level;
                 this.level++;
                 this.hp = Math.min(this.maxHp, this.hp + 30);
-                this.playTone(587.33, 'square', 0.15, 0.15);
-                setTimeout(() => this.playTone(880, 'square', 0.25, 0.15), 100);
-                this.spawnParticles(nx, ny, '#fbbf24', 40);
+                this.playTone(523.25, 'sine', 0.15, 0.12); // C5
+                setTimeout(() => this.playTone(659.25, 'sine', 0.15, 0.12), 90); // E5
+                setTimeout(() => this.playTone(783.99, 'sine', 0.25, 0.12), 180); // G5
+                this.spawnPastelFireworks(nx, ny);
 
                 const notif = document.getElementById('notification-overlay');
                 if (notif) {
@@ -219,7 +220,7 @@ export class Game {
         const sy = this.offsetY + gy * this.tileSize + this.tileSize / 2;
         for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
-            const speed = Math.random() * 80 + 20;
+            const speed = Math.random() * 70 + 20;
             this.particles.push({
                 x: sx,
                 y: sy,
@@ -229,6 +230,26 @@ export class Game {
                 life: 1.0,
                 maxLife: 1.0,
                 size: Math.random() * 4 + 2
+            });
+        }
+    }
+
+    spawnPastelFireworks(gx, gy) {
+        const colors = ['#f4be52', '#ff7e67', '#7fc8a9', '#a89fca', '#f89a85'];
+        const sx = this.offsetX + gx * this.tileSize + this.tileSize / 2;
+        const sy = this.offsetY + gy * this.tileSize + this.tileSize / 2;
+        for (let i = 0; i < 45; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = Math.random() * 110 + 30;
+            this.particles.push({
+                x: sx,
+                y: sy,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                life: 1.0,
+                maxLife: 1.0,
+                size: Math.random() * 5 + 2.5
             });
         }
     }
@@ -250,80 +271,106 @@ export class Game {
 
     render() {
         const { ctx, width, height, tileSize, offsetX, offsetY } = this;
-        ctx.fillStyle = '#05070d';
+        
+        // Warm oatmeal parchment canvas backdrop
+        ctx.fillStyle = '#efe6d8';
         ctx.fillRect(0, 0, width, height);
 
         if (!this.grid) return;
 
-        // 1. Draw Map Tiles
+        // 1. Draw Map Tiles with Humanized Pastel Palette
         for (let y = 0; y < this.rows; y++) {
             for (let x = 0; x < this.cols; x++) {
                 const vis = this.fog[y][x];
-                if (vis === 0) continue; // Unexplored fog
-
                 const px = offsetX + x * tileSize;
                 const py = offsetY + y * tileSize;
 
+                if (vis === 0) {
+                    // Soft misty fog
+                    ctx.fillStyle = '#e4dacb';
+                    ctx.fillRect(px, py, tileSize, tileSize);
+                    continue;
+                }
+
                 if (this.grid[y][x] === 1) {
-                    ctx.fillStyle = vis === 2 ? '#1e293b' : '#0f172a'; // Wall
+                    // Wall Tiles: Warm earthy pastel brick
+                    ctx.fillStyle = vis === 2 ? '#9e8774' : '#c4b8a6';
                     ctx.fillRect(px, py, tileSize, tileSize);
-                    ctx.strokeStyle = '#334155';
-                    ctx.strokeRect(px, py, tileSize, tileSize);
+                    ctx.strokeStyle = vis === 2 ? '#887462' : '#b2a593';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(px + 0.5, py + 0.5, tileSize - 1, tileSize - 1);
                 } else {
-                    ctx.fillStyle = vis === 2 ? '#0f172a' : '#090d16'; // Floor
+                    // Floor Tiles: Warm cream biscuit
+                    ctx.fillStyle = vis === 2 ? '#fffaf2' : '#f3ebd9';
                     ctx.fillRect(px, py, tileSize, tileSize);
+                    ctx.strokeStyle = vis === 2 ? '#f0e5d5' : '#e6dcc9';
+                    ctx.lineWidth = 0.5;
+                    ctx.strokeRect(px, py, tileSize, tileSize);
                 }
             }
         }
 
-        // 2. Draw Traps
+        // 2. Draw Traps: Soft rose / berry
         for (const trap of this.traps) {
             if (this.fog[trap.y][trap.x] === 2) {
                 const tx = offsetX + trap.x * tileSize + tileSize / 2;
                 const ty = offsetY + trap.y * tileSize + tileSize / 2;
-                ctx.fillStyle = trap.triggered ? '#475569' : '#ef4444';
+                ctx.fillStyle = trap.triggered ? '#b3a89a' : '#e06b75';
                 ctx.beginPath();
                 ctx.arc(tx, ty, 6, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.strokeStyle = trap.triggered ? '#9c9284' : '#c9545e';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
             }
         }
 
-        // 3. Draw Treasure Chest
+        // 3. Draw Golden Chest: Warm honeycomb pastel gold with terracotta band
         if (this.fog[this.treasure.y][this.treasure.x] > 0) {
             const tx = offsetX + this.treasure.x * tileSize;
             const ty = offsetY + this.treasure.y * tileSize;
-            ctx.fillStyle = '#fbbf24';
-            ctx.fillRect(tx + 6, ty + 6, tileSize - 12, tileSize - 12);
-            ctx.strokeStyle = '#f59e0b';
+            
+            // Chest body
+            ctx.fillStyle = '#f4be52';
+            ctx.fillRect(tx + 5, ty + 6, tileSize - 10, tileSize - 12);
+            ctx.strokeStyle = '#d99f36';
             ctx.lineWidth = 2;
-            ctx.strokeRect(tx + 6, ty + 6, tileSize - 12, tileSize - 12);
-            ctx.fillStyle = '#d97706';
-            ctx.fillRect(tx + 12, ty + 12, tileSize - 24, 4);
+            ctx.strokeRect(tx + 5, ty + 6, tileSize - 10, tileSize - 12);
+            
+            // Terracotta latch band
+            ctx.fillStyle = '#e07a5f';
+            ctx.fillRect(tx + 12, ty + 6, tileSize - 24, tileSize - 12);
+            
+            // Lock accent
+            ctx.fillStyle = '#fffdfa';
+            ctx.beginPath();
+            ctx.arc(tx + tileSize / 2, ty + tileSize / 2, 2.5, 0, Math.PI * 2);
+            ctx.fill();
         }
 
-        // 4. Draw Player
+        // 4. Draw Player: Cute pastel coral adventurer with soft lantern halo
         const ppx = offsetX + this.player.x * tileSize + tileSize / 2;
         const ppy = offsetY + this.player.y * tileSize + tileSize / 2;
 
-        // Player glow
-        const glow = ctx.createRadialGradient(ppx, ppy, 2, ppx, ppy, 18);
-        glow.addColorStop(0, '#38bdf8');
-        glow.addColorStop(1, 'rgba(56, 189, 248, 0)');
+        // Warm honey lantern glow
+        const glow = ctx.createRadialGradient(ppx, ppy, 2, ppx, ppy, 22);
+        glow.addColorStop(0, 'rgba(255, 205, 120, 0.45)');
+        glow.addColorStop(1, 'rgba(255, 205, 120, 0)');
         ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(ppx, ppy, 18, 0, Math.PI * 2);
+        ctx.arc(ppx, ppy, 22, 0, Math.PI * 2);
         ctx.fill();
 
-        // Player avatar
-        ctx.fillStyle = '#38bdf8';
+        // Player circular body
+        ctx.fillStyle = '#ff7e67';
         ctx.beginPath();
         ctx.arc(ppx, ppy, tileSize / 2 - 6, 0, Math.PI * 2);
         ctx.fill();
-        ctx.strokeStyle = '#f8fafc';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#fffef9';
+        ctx.lineWidth = 2.5;
         ctx.stroke();
 
-        // 5. Update & Draw Particles
+        // 5. Update & Draw Particles (Pastel sparkles)
         for (let i = this.particles.length - 1; i >= 0; i--) {
             const p = this.particles[i];
             p.x += p.vx * 0.016;
